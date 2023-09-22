@@ -71,27 +71,27 @@ async function scrapeData() {
 
 /****************** scrapeData to add API /api/products *************/
 // Initial load of deals
-// app.get("/api/products", async (req, res) => {
-//   try {
-//     const crypto = await scrapeData();
+app.get("/api/products", async (req, res) => {
+  try {
+    const crypto = await scrapeData();
 
-//     const extractedData = await scrapeData();
+    const extractedData = await scrapeData();
 
-//     for (let i = extractedData.length - 1; i >= 0; i--) {
-//       const productData = extractedData[i];
-//       await postDataToAPIB(productData);
-//     }
-//     console.log(extractedData);
+    for (let i = extractedData.length - 1; i >= 0; i--) {
+      const productData = extractedData[i];
+      await postDataToAPIB(productData);
+    }
+    console.log(extractedData);
 
-//     return res.status(200).json({
-//       result: crypto,
-//     });
-//   } catch (err) {
-//     return res.status(500).json({
-//       err: err.toString(),
-//     });
-//   }
-// });
+    return res.status(200).json({
+      result: crypto,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      err: err.toString(),
+    });
+  }
+});
 
 /****************** scrapeData to add API /api/products *************/
 
@@ -231,21 +231,21 @@ async function postDataToAPIB(productData) {
 
 //Schedule the cron job to fetch and post data every 5 minutes
 
-cron.schedule("*/1 * * * *", async () => {
-  try {
-    console.log("Running cron job...");
-    const extractedData = await scrapeData();
+// cron.schedule("*/1 * * * *", async () => {
+//   try {
+//     console.log("Running cron job...");
+//     const extractedData = await scrapeData();
 
-    for (let i = extractedData.length - 1; i >= 0; i--) {
-      const productData = extractedData[i];
-      await postDataToAPIB(productData);
-    }
+//     for (let i = extractedData.length - 1; i >= 0; i--) {
+//       const productData = extractedData[i];
+//       await postDataToAPIB(productData);
+//     }
 
-    console.log("Cron job completed.");
-  } catch (error) {
-    console.error("Cron job error:", error.message);
-  }
-});
+//     console.log("Cron job completed.");
+//   } catch (error) {
+//     console.error("Cron job error:", error.message);
+//   }
+// });
 
 /******************** Schedule the cron job  ***************/
 

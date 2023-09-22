@@ -81,7 +81,7 @@ app.get("/api/products", async (req, res) => {
       const productData = extractedData[i];
       await postDataToAPIB(productData);
     }
-    console.log(extractedData);
+    //console.log(extractedData);
 
     return res.status(200).json({
       result: crypto,
@@ -201,7 +201,7 @@ async function postDataToAPIB(productData) {
     formData.append("refId", responses.data.data.id);
     formData.append("field", "productimage");
     // Replace with your Strapi API URL
-    const strapiApiUrl = "http://localhost:1337/";
+    const strapiApiUrl = "http://localhost:1337/api/products";
     const uploadUrl = `${strapiApiUrl}/api/upload`;
 
     axios

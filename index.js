@@ -97,7 +97,7 @@ app.get("/api/products", async (req, res) => {
 
 // Post data to another API
 async function postDataToAPIB(productData) {
-  const apiBUrl = "http://127.0.0.1:1337/api/products"; // Replace with the actual API B URL
+  const apiBUrl = "http://localhost:1337/api/products"; // Replace with the actual API B URL
   //console.log(productData);
   try {
     /******************** check products already Exists  *************/
@@ -201,7 +201,7 @@ async function postDataToAPIB(productData) {
     formData.append("refId", responses.data.data.id);
     formData.append("field", "productimage");
     // Replace with your Strapi API URL
-    const strapiApiUrl = "http://127.0.0.1:1337";
+    const strapiApiUrl = "http://localhost:1337/";
     const uploadUrl = `${strapiApiUrl}/api/upload`;
 
     axios

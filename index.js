@@ -185,20 +185,20 @@ async function postDataToAPIB(productData) {
       imagePath
     );
 
-    // const responses = await axios.post(apiBUrl, {
-    //   data: {
-    //     //  productImgLink: imagePath,
-    //     productLink: productData.productLink,
-    //     title: productData.title,
-    //     dealPrice: productData.dealPrice,
-    //     originalPrice: productData.originalPrice,
-    //     platform: productData.platform,
-    //     discount: productData.discount,
-    //     // publishedAt: null,
-    //   },
-    // });
+    const responses = await axios.post(apiBUrl, {
+      data: {
+        //  productImgLink: imagePath,
+        productLink: productData.productLink,
+        title: productData.title,
+        dealPrice: productData.dealPrice,
+        originalPrice: productData.originalPrice,
+        platform: productData.platform,
+        discount: productData.discount,
+        // publishedAt: null,
+      },
+    });
 
-    // console.log("Data posted to API B:", responses.data);
+    console.log("Data posted to API B:", responses.data);
 
     // Create a new FormData instance
     const formData = new FormData();

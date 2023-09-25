@@ -81,6 +81,7 @@ app.get("/api/products", async (req, res) => {
       const productData = extractedData[i];
       await postDataToAPIB(productData);
     }
+    //console.log(extractedData);
 
     return res.status(200).json({
       result: crypto,
@@ -156,15 +157,6 @@ async function postDataToAPIB(productData) {
       fileName
     );
 
-    // Check if the image file exists
-    if (!fs.existsSync(imagePath)) {
-      console.error(`Image file does not exist at path: ${imagePath}`);
-      // Handle the error appropriately, e.g., by returning an error response
-      return res.status(500).json({
-        error: `Image file does not exist at path: ${imagePath}`,
-      });
-    }
-
     // Create necessary directories if they don't exist
     const dirPath = path.dirname(imagePath);
     if (!fs.existsSync(dirPath)) {
@@ -213,7 +205,7 @@ async function postDataToAPIB(productData) {
     formData.append("refId", responses.data.data.id);
     formData.append("field", "productimage");
     // Replace with your Strapi API URL
-    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com";
+    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com/";
     const uploadUrl = `${strapiApiUrl}/api/upload`;
 
     axios

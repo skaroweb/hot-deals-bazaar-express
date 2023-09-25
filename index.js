@@ -201,8 +201,7 @@ async function postDataToAPIB(productData) {
     formData.append("refId", responses.data.data.id);
     formData.append("field", "productimage");
     // Replace with your Strapi API URL
-    const strapiApiUrl =
-      "https://hot-deals-bazaar-strapi.onrender.com/api/products";
+    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com/";
     const uploadUrl = `${strapiApiUrl}/api/upload`;
 
     axios

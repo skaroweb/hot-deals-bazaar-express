@@ -97,7 +97,7 @@ app.get("/api/products", async (req, res) => {
 
 // Post data to another API
 async function postDataToAPIB(productData) {
-  const apiBUrl = "http://localhost:1337/api/products"; // Replace with the actual API B URL
+  const apiBUrl = "https://hot-deals-bazaar-strapi.onrender.com/api/products"; // Replace with the actual API B URL
   //console.log(productData);
   try {
     /******************** check products already Exists  *************/
@@ -169,7 +169,7 @@ async function postDataToAPIB(productData) {
     /******************** Image Upload  *************/
     const filenameWithExt = path.basename(imagePath);
     const uploadpathwithFilename = path.relative(
-      "D:/React/strapi-server/",
+      "https://hot-deals-bazaar-express.onrender.com/",
       imagePath
     );
 
@@ -201,7 +201,8 @@ async function postDataToAPIB(productData) {
     formData.append("refId", responses.data.data.id);
     formData.append("field", "productimage");
     // Replace with your Strapi API URL
-    const strapiApiUrl = "http://localhost:1337/api/products";
+    const strapiApiUrl =
+      "https://hot-deals-bazaar-strapi.onrender.com/api/products";
     const uploadUrl = `${strapiApiUrl}/api/upload`;
 
     axios

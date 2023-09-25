@@ -81,7 +81,6 @@ app.get("/api/products", async (req, res) => {
       const productData = extractedData[i];
       await postDataToAPIB(productData);
     }
-    //console.log(extractedData);
 
     return res.status(200).json({
       result: crypto,
@@ -151,7 +150,20 @@ async function postDataToAPIB(productData) {
     const fileName = `${cleanedProductTitle}.${ext.replace(/\W/g, "")}`;
 
     // Specify the full image path including the uploads directory
-    const imagePath = path.join(__dirname, "uploads", fileName);
+    const imagePath = path.join(
+      "https://hot-deals-bazaar-express.onrender.com",
+      "uploads",
+      fileName
+    );
+
+    // Check if the image file exists
+    if (!fs.existsSync(imagePath)) {
+      console.error(`Image file does not exist at path: ${imagePath}`);
+      // Handle the error appropriately, e.g., by returning an error response
+      return res.status(500).json({
+        error: `Image file does not exist at path: ${imagePath}`,
+      });
+    }
 
     // Create necessary directories if they don't exist
     const dirPath = path.dirname(imagePath);
@@ -173,20 +185,20 @@ async function postDataToAPIB(productData) {
       imagePath
     );
 
-    const responses = await axios.post(apiBUrl, {
-      data: {
-        //  productImgLink: imagePath,
-        productLink: productData.productLink,
-        title: productData.title,
-        dealPrice: productData.dealPrice,
-        originalPrice: productData.originalPrice,
-        platform: productData.platform,
-        discount: productData.discount,
-        // publishedAt: null,
-      },
-    });
+    // const responses = await axios.post(apiBUrl, {
+    //   data: {
+    //     //  productImgLink: imagePath,
+    //     productLink: productData.productLink,
+    //     title: productData.title,
+    //     dealPrice: productData.dealPrice,
+    //     originalPrice: productData.originalPrice,
+    //     platform: productData.platform,
+    //     discount: productData.discount,
+    //     // publishedAt: null,
+    //   },
+    // });
 
-    console.log("Data posted to API B:", responses.data);
+    // console.log("Data posted to API B:", responses.data);
 
     // Create a new FormData instance
     const formData = new FormData();
@@ -201,7 +213,7 @@ async function postDataToAPIB(productData) {
     formData.append("refId", responses.data.data.id);
     formData.append("field", "productimage");
     // Replace with your Strapi API URL
-    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com/";
+    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com";
     const uploadUrl = `${strapiApiUrl}/api/upload`;
 
     axios

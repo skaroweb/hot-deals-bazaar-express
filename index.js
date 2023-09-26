@@ -71,26 +71,27 @@ async function scrapeData() {
 
 /****************** scrapeData to add API /api/products *************/
 // Initial load of deals
-app.get("/api/products", async (req, res) => {
-  try {
-    const crypto = await scrapeData();
+// app.get("/api/products", async (req, res) => {
+//   try {
+//     const crypto = await scrapeData();
 
-    const extractedData = await scrapeData();
+//     const extractedData = await scrapeData();
 
-    for (let i = extractedData.length - 1; i >= 0; i--) {
-      const productData = extractedData[i];
-      await postDataToAPIB(productData);
-    }
+//     for (let i = extractedData.length - 1; i >= 0; i--) {
+//       const productData = extractedData[i];
+//       await postDataToAPIB(productData);
+//     }
+//     //console.log(extractedData);
 
-    return res.status(200).json({
-      result: crypto,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      err: err.toString(),
-    });
-  }
-});
+//     return res.status(200).json({
+//       result: crypto,
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       err: err.toString(),
+//     });
+//   }
+// });
 
 /****************** scrapeData to add API /api/products *************/
 
@@ -127,7 +128,7 @@ async function postDataToAPIB(productData) {
     }
     /******************** check products already Exists  *************/
 
-    /******************** Image stored in Local  *************
+    /******************** Image stored in Local  *************/
 
     // Assuming 'jsonData' holds the JSON data with 'productImgLink'
 
@@ -171,7 +172,7 @@ async function postDataToAPIB(productData) {
       "D:/React/strapi-server/",
       imagePath
     );
-    // console.log(uploadpathwithFilename);
+
     const responses = await axios.post(apiBUrl, {
       data: {
         //  productImgLink: imagePath,
@@ -187,34 +188,34 @@ async function postDataToAPIB(productData) {
 
     console.log("Data posted to API B:", responses.data);
 
-    // // Create a new FormData instance
-    // const formData = new FormData();
+    // Create a new FormData instance
+    const formData = new FormData();
 
-    // // Append the actual file to the FormData object
-    // const filePath = uploadpathwithFilename;
-    // const fileStream = fs.createReadStream(filePath);
-    // formData.append("files", fileStream, {
-    //   filename: filenameWithExt,
-    // });
-    // formData.append("ref", "api::product.product");
-    // formData.append("refId", responses.data.data.id);
-    // formData.append("field", "productimage");
-    // // Replace with your Strapi API URL
-    // const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com/";
-    // const uploadUrl = `${strapiApiUrl}/api/upload`;
+    // Append the actual file to the FormData object
+    const filePath = uploadpathwithFilename;
+    const fileStream = fs.createReadStream(filePath);
+    formData.append("files", fileStream, {
+      filename: filenameWithExt,
+    });
+    formData.append("ref", "api::product.product");
+    formData.append("refId", responses.data.data.id);
+    formData.append("field", "productimage");
+    // Replace with your Strapi API URL
+    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com/";
+    const uploadUrl = `${strapiApiUrl}/api/upload`;
 
-    // axios
-    //   .post(uploadUrl, formData, {
-    //     headers: {
-    //       ...formData.getHeaders(),
-    //     },
-    //   })
-    //   .then((response) => {
-    //     //  console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error uploading image:", error.message);
-    //   });
+    axios
+      .post(uploadUrl, formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
+      })
+      .then((response) => {
+        //  console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error.message);
+      });
 
     /******************** Image Upload  ***************/
 

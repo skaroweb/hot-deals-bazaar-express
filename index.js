@@ -127,7 +127,7 @@ async function postDataToAPIB(productData) {
 
     /******************** Download Image  *************/
     const imageFileName = path.basename(productData.productImgLink);
-    const imagePath = path.join(__dirname, "uploads", imageFileName);
+    const imagePath = path.join(__dirname, "/uploads", imageFileName);
 
     const imageResponse = await axios.get(productData.productImgLink, {
       responseType: "stream",

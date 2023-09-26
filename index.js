@@ -106,7 +106,7 @@ app.get("/api/products", async (req, res) => {
 
 // Post data to another API
 async function postDataToAPIB(productData) {
-  const apiBUrl = "http://127.0.0.1:1337/api/products"; // Replace with the actual API B URL
+  const apiBUrl = "https://hot-deals-bazaar-strapi.onrender.com/api/products"; // Replace with the actual API B URL
   //console.log(productData);
   try {
     /******************** check products already Exists  *************/

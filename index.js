@@ -69,35 +69,44 @@ async function scrapeData() {
 
 /****************** scrapeData from thuttu *************/
 
+const cloudinary = require("cloudinary").v2;
+
+// Configure Cloudinary with your credentials
+cloudinary.config({
+  cloud_name: "dmkttselw",
+  api_key: "637626642436314",
+  api_secret: "0ofuNHTqQguXdRu4xj4ONSzbwS8",
+});
+
 /****************** scrapeData to add API /api/products *************/
 // Initial load of deals
-// app.get("/api/products", async (req, res) => {
-//   try {
-//     const crypto = await scrapeData();
+app.get("/api/products", async (req, res) => {
+  try {
+    const crypto = await scrapeData();
 
-//     const extractedData = await scrapeData();
+    const extractedData = await scrapeData();
 
-//     for (let i = extractedData.length - 1; i >= 0; i--) {
-//       const productData = extractedData[i];
-//       await postDataToAPIB(productData);
-//     }
-//     //console.log(extractedData);
+    for (let i = extractedData.length - 1; i >= 0; i--) {
+      const productData = extractedData[i];
+      await postDataToAPIB(productData);
+    }
+    //console.log(extractedData);
 
-//     return res.status(200).json({
-//       result: crypto,
-//     });
-//   } catch (err) {
-//     return res.status(500).json({
-//       err: err.toString(),
-//     });
-//   }
-// });
+    return res.status(200).json({
+      result: crypto,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      err: err.toString(),
+    });
+  }
+});
 
 /****************** scrapeData to add API /api/products *************/
 
 // Post data to another API
 async function postDataToAPIB(productData) {
-  const apiBUrl = "https://hot-deals-bazaar-strapi.onrender.com/api/products"; // Replace with the actual API B URL
+  const apiBUrl = "http://127.0.0.1:1337/api/products"; // Replace with the actual API B URL
   //console.log(productData);
   try {
     /******************** check products already Exists  *************/
@@ -128,54 +137,20 @@ async function postDataToAPIB(productData) {
     }
     /******************** check products already Exists  *************/
 
-    /******************** Image stored in Local  *************/
-
-    // Assuming 'jsonData' holds the JSON data with 'productImgLink'
-
-    const productImgLink = productData.productImgLink;
-    const response = await axios.get(productImgLink, {
-      responseType: "arraybuffer",
+    /******************** Upload image to Cloudinary  *************/
+    const imagePath = productData.productImgLink;
+    const cloudinaryResponse = await cloudinary.uploader.upload(imagePath, {
+      folder: "product-images", // Optional: specify a folder in Cloudinary
     });
 
-    // Extract the file extension from the URL
-    const ext = path.extname(productImgLink).split("?")[0]; // Remove query parameters
+    const cloudinaryImageUrl = cloudinaryResponse.secure_url;
 
-    const productTitle = productData.title;
-    const cleanedProductTitle = productTitle
-      .replace(/-/g, " ") // Replace dashes with spaces
-      .replace(/[^\w\s]/g, "") // Remove non-alphanumeric characters
-      .replace(/\s+/g, " ") // Remove consecutive spaces
-      .trim(); // Remove leading and trailing spaces
-
-    // Create a cleaned-up file name without special characters
-    const fileName = `${cleanedProductTitle}.${ext.replace(/\W/g, "")}`;
-
-    // Specify the full image path including the uploads directory
-    const imagePath = path.join(__dirname, "uploads", fileName);
-
-    // Create necessary directories if they don't exist
-    const dirPath = path.dirname(imagePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-
-    // Write the image data to the file
-    fs.writeFileSync(imagePath, response.data);
-
-    //console.log(response.data);
-
-    /******************** Image stored in Local  *************/
-
-    /******************** Image Upload  *************/
-    const filenameWithExt = path.basename(imagePath);
-    const uploadpathwithFilename = path.relative(
-      "D:/React/strapi-server/",
-      imagePath
-    );
+    /******************** Upload image to Cloudinary  *************/
 
     const responses = await axios.post(apiBUrl, {
       data: {
         //  productImgLink: imagePath,
+        ProductImgUrl: cloudinaryImageUrl,
         productLink: productData.productLink,
         title: productData.title,
         dealPrice: productData.dealPrice,
@@ -187,39 +162,6 @@ async function postDataToAPIB(productData) {
     });
 
     console.log("Data posted to API B:", responses.data);
-
-    // Create a new FormData instance
-    const formData = new FormData();
-
-    // Append the actual file to the FormData object
-    const filePath = uploadpathwithFilename;
-    const fileStream = fs.createReadStream(filePath);
-    formData.append("files", fileStream, {
-      filename: filenameWithExt,
-    });
-    formData.append("ref", "api::product.product");
-    formData.append("refId", responses.data.data.id);
-    formData.append("field", "productimage");
-    // Replace with your Strapi API URL
-    const strapiApiUrl = "https://hot-deals-bazaar-strapi.onrender.com/";
-    const uploadUrl = `${strapiApiUrl}/api/upload`;
-
-    axios
-      .post(uploadUrl, formData, {
-        headers: {
-          ...formData.getHeaders(),
-        },
-      })
-      .then((response) => {
-        //  console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error.message);
-      });
-
-    /******************** Image Upload  ***************/
-
-    /******************** New Products added  ***************/
   } catch (error) {
     console.error("Error posting data to API B:", error.message);
   }
@@ -231,21 +173,21 @@ async function postDataToAPIB(productData) {
 
 //Schedule the cron job to fetch and post data every 5 minutes
 
-cron.schedule("*/1 * * * *", async () => {
-  try {
-    console.log("Running cron job...");
-    const extractedData = await scrapeData();
+// cron.schedule("*/1 * * * *", async () => {
+//   try {
+//     console.log("Running cron job...");
+//     const extractedData = await scrapeData();
 
-    for (let i = extractedData.length - 1; i >= 0; i--) {
-      const productData = extractedData[i];
-      await postDataToAPIB(productData);
-    }
+//     for (let i = extractedData.length - 1; i >= 0; i--) {
+//       const productData = extractedData[i];
+//       await postDataToAPIB(productData);
+//     }
 
-    console.log("Cron job completed.");
-  } catch (error) {
-    console.error("Cron job error:", error.message);
-  }
-});
+//     console.log("Cron job completed.");
+//   } catch (error) {
+//     console.error("Cron job error:", error.message);
+//   }
+// });
 
 /******************** Schedule the cron job  ***************/
 

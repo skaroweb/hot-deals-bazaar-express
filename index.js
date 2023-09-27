@@ -173,21 +173,21 @@ async function postDataToAPIB(productData) {
 
 //Schedule the cron job to fetch and post data every 5 minutes
 
-// cron.schedule("*/1 * * * *", async () => {
-//   try {
-//     console.log("Running cron job...");
-//     const extractedData = await scrapeData();
+cron.schedule("*/1 * * * *", async () => {
+  try {
+    console.log("Running cron job...");
+    const extractedData = await scrapeData();
 
-//     for (let i = extractedData.length - 1; i >= 0; i--) {
-//       const productData = extractedData[i];
-//       await postDataToAPIB(productData);
-//     }
+    for (let i = extractedData.length - 1; i >= 0; i--) {
+      const productData = extractedData[i];
+      await postDataToAPIB(productData);
+    }
 
-//     console.log("Cron job completed.");
-//   } catch (error) {
-//     console.error("Cron job error:", error.message);
-//   }
-// });
+    console.log("Cron job completed.");
+  } catch (error) {
+    console.error("Cron job error:", error.message);
+  }
+});
 
 /******************** Schedule the cron job  ***************/
 
